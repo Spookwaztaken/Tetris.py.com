@@ -101,27 +101,26 @@ class TetrisApp:
 
         pygame.display.flip()
 
-    def check_collision(self, dx, dy):
-        new_x = self.current_piece_x + dx
-        new_y = self.current_piece_y + dy
 
-        for y, row in enumerate(self.current_piece):
+    def check_collision(self, px, py, piece):
+        """Check if the piece collides with the board boundaries or other pieces."""
+        for y, row in enumerate(piece):
             for x, cell in enumerate(row):
-                if cell != 0:
-                    board_x = new_x + x
-                    board_y = new_y + y
-
-                    if board_x < 0 or board_x >= TetrisApp.BOARD_WIDTH \
-                            or board_y >= TetrisApp.BOARD_HEIGHT:
+                try:
+                    # Check if the cell is filled and if it's outside boundaries or colliding
+                    if cell and (
+                            py + y >= TetrisApp.BOARD_HEIGHT or  # Bottom boundary
+                            px + x < 0 or  # Left boundary
+                            px + x >= TetrisApp.BOARD_WIDTH or  # Right boundary
+                            self.board[py + y][px + x]  # Collision with existing blocks
+                    ):
                         return True
-
-                    if board_y >= 0 and self.board[board_y][board_x] != 0:
-                        return True
-
+                except IndexError:
+                    return True
         return False
 
     def move(self, dx, dy):
-        if not self.check_collision(dx, dy):
+        if  not self.check_collision(dx, dy, self.current_piece):
             self.current_piece_x += dx
             self.current_piece_y += dy
             return True
@@ -130,7 +129,8 @@ class TetrisApp:
 
     def rotate(self):
         rotated = [list(row) for row in zip(*reversed(self.current_piece))]
-        self.current_piece = rotated
+        if not self.check_collision(self.current_piece_x, self.current_piece_y, rotated):
+            self.current_piece = rotated
 
     def handle_events(self):
         # 이벤트 처리 (특히 창 닫기)
