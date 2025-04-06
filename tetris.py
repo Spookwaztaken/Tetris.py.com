@@ -120,7 +120,7 @@ class TetrisApp:
         return False
 
     def move(self, dx, dy):
-        if  not self.check_collision(dx, dy, self.current_piece):
+        if not self.check_collision(self.current_piece_x + dx, self.current_piece_y + dy, self.current_piece):
             self.current_piece_x += dx
             self.current_piece_y += dy
             return True
