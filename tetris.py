@@ -59,7 +59,7 @@ class TetrisApp:
         self.game_over = False
 
         # Time for piece movement
-        self.drop_time = 0
+        self.drop_time = pygame.time.get_ticks()
         self.drop_speed = 500  # 0.5 second
 
         # start with a new piece
@@ -151,11 +151,19 @@ class TetrisApp:
                 elif event.key == pygame.K_SPACE:
                     print("Space Bar Pressed")
 
+    def update(self):
+        # get current time
+        current_time = pygame.time.get_ticks()
+        if current_time - self.drop_time > self.drop_speed:
+            self.move (0, 1)
+            self.drop_time = current_time
+
     def run(self):
         """ Main game loop. """
         while not self.game_over:
             self.handle_events()
             self.draw()
+            self.update()
             self.clock.tick(60)  # Limit to 60 FPS
 
 
