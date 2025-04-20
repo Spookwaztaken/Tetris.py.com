@@ -89,6 +89,14 @@ class TetrisApp:
     def draw(self):
         self.screen.fill((0, 216, 166))
 
+        #draw the board
+        for y, row in enumerate(self.board):
+            for x, cell in enumerate(row):
+                if cell:
+                    color = TetrisApp.COLORS[cell]
+                    self.draw_tile(x, y, color)
+
+
         # Draw current piece!!!
         for y, row in enumerate(self.current_piece):
             for x, cell in enumerate(row):
@@ -150,12 +158,22 @@ class TetrisApp:
                     self.move(0, 1)
                 elif event.key == pygame.K_SPACE:
                     print("Space Bar Pressed")
+    def freeze_piece(self):
+        for y, row in enumerate(self.current_piece):
+            for x, cell in enumerate(row):
+                if cell:
+                    self.board[self.current_piece_y + y][self.current_piece_x + x] = \
+                        TetrisApp.COLORS.index(self.current_piece_color)
+
+        self.new_piece()
 
     def update(self):
         # get current time
         current_time = pygame.time.get_ticks()
         if current_time - self.drop_time > self.drop_speed:
-            self.move (0, 1)
+            if not self.move (0, 1):
+                self.freeze_piece()
+
             self.drop_time = current_time
 
     def run(self):
