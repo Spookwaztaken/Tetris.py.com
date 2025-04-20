@@ -69,8 +69,12 @@ class TetrisApp:
         # TODO
         self.current_piece = choice(TetrisApp.SHAPES)
         self.current_piece_color = choice(TetrisApp.COLORS)
-        self.current_piece_x = 0
+        self.current_piece_x = TetrisApp.BOARD_WIDTH // 2 - len(self.current_piece[0]) // 2
         self.current_piece_y = 0
+
+        if self.check_collision(self.current_piece_x, self.current_piece_y, self.current_piece):
+            self.game_over = True
+            print("Game Over :(")
 
     def draw_tile(self, x, y, color):
         # Calculate the rectangle position
@@ -159,13 +163,24 @@ class TetrisApp:
                 elif event.key == pygame.K_SPACE:
                     while self.move(0, 1):
                         pass
+
+    def clear_line(self):
+        new_board = []
+
+        for row in self.board:
+            if 0 in row:
+                new_board.append(row)
+        num_of_cleared_lines = TetrisApp.BOARD_HEIGHT - len(new_board)
+        for _ in range(num_of_cleared_lines):
+            new_board.insert(0, [0] * TetrisApp.BOARD_WIDTH)
+        self.board = new_board
     def freeze_piece(self):
         for y, row in enumerate(self.current_piece):
             for x, cell in enumerate(row):
                 if cell:
                     self.board[self.current_piece_y + y][self.current_piece_x + x] = \
                         TetrisApp.COLORS.index(self.current_piece_color) + 1
-
+        self.clear_line()
         self.new_piece()
 
     def update(self):
