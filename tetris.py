@@ -93,7 +93,7 @@ class TetrisApp:
         for y, row in enumerate(self.board):
             for x, cell in enumerate(row):
                 if cell:
-                    color = TetrisApp.COLORS[cell]
+                    color = TetrisApp.COLORS[cell - 1]
                     self.draw_tile(x, y, color)
 
 
@@ -157,13 +157,14 @@ class TetrisApp:
                 elif event.key == pygame.K_DOWN:
                     self.move(0, 1)
                 elif event.key == pygame.K_SPACE:
-                    print("Space Bar Pressed")
+                    while self.move(0, 1):
+                        pass
     def freeze_piece(self):
         for y, row in enumerate(self.current_piece):
             for x, cell in enumerate(row):
                 if cell:
                     self.board[self.current_piece_y + y][self.current_piece_x + x] = \
-                        TetrisApp.COLORS.index(self.current_piece_color)
+                        TetrisApp.COLORS.index(self.current_piece_color) + 1
 
         self.new_piece()
 
