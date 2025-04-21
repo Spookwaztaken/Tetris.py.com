@@ -74,7 +74,7 @@ class TetrisApp:
 
         if self.check_collision(self.current_piece_x, self.current_piece_y, self.current_piece):
             self.game_over = True
-            print("Game Over :(")
+            print("Game Over (What a Skill Issue)")
 
     def draw_tile(self, x, y, color):
         # Calculate the rectangle position
